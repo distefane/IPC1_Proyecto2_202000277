@@ -1,2 +1,8 @@
-# IPC1_Proyecto2_202000277
-[Documentación POSTMAN](https://documenter.getpostman.com/view/20342700/UyrAFx3f "Link directo")
+##Nombre:
+Diana Estefania Berducido Domingo
+
+##Carné:
+202000277
+
+##Link documentación en POSTMAN
+[DOCUMENTACIÓN POSTMAN](https://documenter.getpostman.com/view/20342700/UyrAFx3f)

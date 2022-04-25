@@ -6,3 +6,6 @@ Diana Estefania Berducido Domingo
 
 ##Link documentación en POSTMAN
 [DOCUMENTACIÓN POSTMAN](https://documenter.getpostman.com/view/20342700/UyrAFx3f)
+
+##Enlace al despliegue en heroku 
+[HEROKU-DEPLOY](https://pr202000277.herokuapp.com/)

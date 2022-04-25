@@ -1,5 +1,3 @@
-from msvcrt import kbhit
-from socket import INADDR_UNSPEC_GROUP
 from flask import Flask, jsonify, request
 from datetime import datetime
 
@@ -59,6 +57,12 @@ def actualizar_usuario():
             "msg" : "User was not updated, items must be only 6.",
             "status" : 400
         })
+    if len(data) < 6:
+        return jsonify({
+            "msg" : "User was not updated, items are less than 6.",
+            "status" : 400
+        })
+
     user_name = data.get("user_name")
     user_nickname = data.get("user_nickname")
     user_password = data.get("user_password")
@@ -106,7 +110,7 @@ libros = []
 #Crear LIBROS
 @Principal.route('/book', methods=['POST'])
 def ingresar_libros():
-
+    libros_no_cargados = []
 #Ingreso a una lista de diccionarios así:
 #lst = [{"a": 1}, {}, {}]
 #lst[0]--> {"a": 1}
@@ -117,6 +121,10 @@ def ingresar_libros():
     for i in data:
         
         if len(i) > 10:
+            libros_no_cargados.append(i)
+            continue
+        if len(i) < 10:
+            libros_no_cargados.append(i)
             continue
         
         new_book = {
@@ -140,7 +148,7 @@ def ingresar_libros():
                 })
         libros.append(new_book)
     return jsonify({
-        "msg" : "Book(s) was(were) created successfully. Books that contain more than 10 items: won't be charged.",
+        "msg" : f"Book(s) was(were) created successfully. Books could not be charged: {libros_no_cargados}",
         "status" : 200
     })
 
@@ -151,6 +159,11 @@ def actualizar_libro():
     if len(data) > 10:
         return jsonify({
             "msg" : "Book was not updated, items must be only 10.",
+            "status" : 400
+        })
+    if len(data) < 10:
+        return jsonify({
+            "msg" : "Book was not updated, items must be 10.",
             "status" : 400
         })
 
@@ -273,15 +286,21 @@ def prestar_libros():
                 })
 
 #--------------------------------------------------- DEVOLVER LIBRO ---------------------------------------------------
+
 @Principal.route('/borrow/<int:id>', methods=['PUT'])
 def devolver_libro(id):
 
     for i in range(len(prestados)):
         if prestados[i].get("id_borrow") == id:
             if prestados[i].get("returned") == False: 
-                prestados[i]['book_available_copies'] =+ + 1
-                prestados[i]['book_unavailable_copies'] =- - 1
                 prestados[i]['returned'] = True
+                for librito in libros:
+                    if prestados[i]['borrow_book']['id_book'] == librito['id_book']:
+                        prestados[i]['borrow_book']['book_available_copies'] = prestados[i]['borrow_book'].get('book_available_copies') + 1
+                        prestados[i]['borrow_book']['book_unavailable_copies'] = prestados[i]['borrow_book'].get('book_unavailable_copies') - 1
+                        librito['book_available_copies'] = librito.get('book_available_copies') + 1
+                        librito['book_available_copies'] = librito.get('book_available_copies') - 1
+                        
                 return jsonify({
                 "msg" : "Done.",
                 "status" : 200
